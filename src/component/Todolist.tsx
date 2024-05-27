@@ -1,9 +1,12 @@
 import React from "react";
 import {Button} from "./Button";
+import {FilterValuesType} from "../App";
 
 type TodolistType = {
     title: string
     task: Array<TaskType>
+    removeTask: (taskId:number)=>void
+    changeFilter: (filter:FilterValuesType)=>void
 }
 
 export type TaskType = {
@@ -12,13 +15,19 @@ export type TaskType = {
     isDane: boolean
 }
 
-export const Todolist = ({title, task}: TodolistType) => {
+export const Todolist = ({title, task, removeTask, changeFilter}: TodolistType) => {
 
-    const taskElement:Array<JSX.Element> | JSX.Element =
+    const taskElement: Array<JSX.Element> | JSX.Element =
         task.length !== 0 ?
-        task.map(task => {
-        return (<li><input type="checkbox" checked={task.isDane}/> <span>{task.title}</span></li>)
-    }) : <span> Yaur tasklist is empty </span>
+            task.map(task => {
+                return (
+                    <li key={task.id}>
+                        <input type="checkbox" checked={task.isDane}/>
+                        <span>{task.title}</span>
+                        <Button title={'x'} onClick={()=>{removeTask(task.id)}}/>
+                        {/*<button onClick={()=>{removeTask(task.id)}}>x</button>*/}
+                    </li>)
+            }) : <span> Yaur tasklist is empty </span>
 
     return (
         <>
@@ -33,9 +42,9 @@ export const Todolist = ({title, task}: TodolistType) => {
                         {taskElement}
                     </ul>
                     <div>
-                        <Button title={'All'}/>
-                        <Button title={'Active'}/>
-                        <Button title={'Completed'}/>
+                        <Button title={'All'} onClick={()=>changeFilter('all')}/>
+                        <Button title={'Active'} onClick={()=>changeFilter('active')}/>
+                        <Button title={'Completed'} onClick={()=>changeFilter('completed')}/>
                     </div>
                 </div>
             </div>
