@@ -39,6 +39,10 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask}: Todol
     const handleFilterTasksChange = (filter: FilterValuesType) => {
         changeFilter(filter);
     }
+    const isAddTaskButtonDisabled = !Boolean(taskTitle.trim()) || taskTitle.length > 25;
+
+    const userTaskTitleLengthWarning = taskTitle.length > 15 && <div>message exceeds 15 characters</div>;
+
 
 
     const taskElement: Array<JSX.Element> | JSX.Element =
@@ -64,10 +68,13 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask}: Todol
                     <div>
                         <input value={taskTitle}
                                onChange={handleChangeTaskTitle}
-                               onKeyUp={handleAddTaskOnKey}/>
-                        <Button title={'+'} onClick={() => {
-                            handleAddTask()
-                        }}/>
+                               onKeyDown={handleAddTaskOnKey}/>
+                        <Button title={'+'}
+                                disabled={isAddTaskButtonDisabled}
+                                onClick={() => {
+                                    handleAddTask()
+                                }}/>
+                        {userTaskTitleLengthWarning}
                     </div>
                     <ul>
                         {taskElement}
