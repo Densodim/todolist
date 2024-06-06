@@ -12,3 +12,15 @@
   border-radius: 5px;
   padding: 15px;
 }
+.error {
+  border: 2px solid gold;
+}
+.error-message {
+  color: gold;
+}
+.active-filter {
+  background-color: lightgreen;
+}
+.is-done {
+  opacity: 0.5;
+}
