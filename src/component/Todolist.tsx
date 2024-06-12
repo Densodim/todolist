@@ -38,7 +38,7 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
         setTaskTitle(event.currentTarget.value)
     }
     const handleAddTaskOnKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        setError(null)
+        error && setError(null)
         if (event.key === 'Enter') {
             handleAddTask()
         }
@@ -50,6 +50,7 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
     // const isAddTaskButtonDisabled = !Boolean(taskTitle.trim()) || taskTitle.length > 25;
 
     const userTaskTitleLengthWarning = taskTitle.length > 15 && <div>message exceeds 15 characters</div>;
+    const userTaskEmptyTitleError = error && <div className={'error-message'}>{error}</div>
 
 
     const taskElement: Array<JSX.Element> | JSX.Element =
@@ -63,7 +64,7 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
                     changeTaskStatus(task.id, newTaskStatus);
                 }
                 return (
-                    <li key={task.id} className={task.isDane ? 'is-done': ''}>
+                    <li key={task.id} className={task.isDane ? 'is-done' : ''}>
                         <input type="checkbox"
                                checked={task.isDane}
                                onChange={handlerChangeTaskStatus}
@@ -97,7 +98,7 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
                                     handleAddTask()
                                 }}
                         />
-                        {error && <div className={'error-message'}>{error}</div>}
+                        {userTaskEmptyTitleError}
                         {userTaskTitleLengthWarning}
                     </div>
                     <ul>
@@ -105,17 +106,17 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
                     </ul>
                     <div>
                         <Button
-                            className={filter === 'all' ? 'active-filter': ''}
+                            className={filter === 'all' ? 'active-filter' : ''}
                             title={'All'}
                             onClick={() => handleFilterTasksChange('all')}
                         />
                         <Button
-                            className={filter === 'active' ? 'active-filter': ''}
+                            className={filter === 'active' ? 'active-filter' : ''}
                             title={'Active'}
                             onClick={() => handleFilterTasksChange('active')}
                         />
                         <Button
-                            className={filter === 'completed' ? 'active-filter': ''}
+                            className={filter === 'completed' ? 'active-filter' : ''}
                             title={'Completed'}
                             onClick={() => handleFilterTasksChange('completed')}
                         />

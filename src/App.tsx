@@ -47,7 +47,7 @@ function App() {
         setTask(newTasks);
     }
     const changeTaskStatus = (taskId: string, taskStatus: boolean) => {
-        // const tasks = task.find(task => task.id === taskId);
+        // const tasks: TaskType | undefined = task.find(task => task.id === taskId);
         // if (tasks) {
         //     tasks.isDane = taskStatus
         //     setTask([...task])
