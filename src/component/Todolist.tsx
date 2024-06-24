@@ -5,11 +5,13 @@ import {FilterValuesType} from "../App";
 type TodolistType = {
     title: string
     task: Array<TaskType>
-    removeTask: (taskId: string) => void
-    changeFilter: (filter: FilterValuesType) => void
-    addTask: (title: string) => void
-    changeTaskStatus: (taskId: string, taskStatus: boolean) => void
+    removeTask: (taskId: string, todolistId: string) => void
+    changeFilter: (filter: FilterValuesType, todolistId: string) => void
+    addTask: (title: string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void
     filter: string
+    todolistId: string
+    removeTodolist: (todolistId: string) => void
 }
 
 export type TaskType = {
@@ -19,7 +21,17 @@ export type TaskType = {
 }
 
 
-export const Todolist = ({title, task, removeTask, changeFilter, addTask, changeTaskStatus, filter}: TodolistType) => {
+export const Todolist = ({
+                             title,
+                             task,
+                             removeTask,
+                             changeFilter,
+                             addTask,
+                             changeTaskStatus,
+                             filter,
+                             todolistId,
+                             removeTodolist
+                         }: TodolistType) => {
 
     // const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,7 +40,7 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
 
     const handleAddTask = () => {
         if (taskTitle.trim() !== '') {
-            addTask(taskTitle.trim())
+            addTask(taskTitle.trim(), todolistId)
             setTaskTitle('')
         } else {
             setError('Title cannot be empty')
@@ -44,24 +56,25 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
         }
     }
     const handleFilterTasksChange = (filter: FilterValuesType) => {
-        changeFilter(filter);
+        changeFilter(filter, todolistId);
     }
-
-    // const isAddTaskButtonDisabled = !Boolean(taskTitle.trim()) || taskTitle.length > 25;
+    const handlerRemoveTodolist = () => {
+        removeTodolist(todolistId);
+    }
 
     const userTaskTitleLengthWarning = taskTitle.length > 15 && <div>message exceeds 15 characters</div>;
     const userTaskEmptyTitleError = error && <div className={'error-message'}>{error}</div>
 
 
-    const taskElement: Array<JSX.Element> | JSX.Element =
+    const taskElement =
         task.length !== 0 ?
             task.map(task => {
                 const handleRemoveTask = () => {
-                    removeTask(task.id);
+                    removeTask(task.id, todolistId);
                 }
                 const handlerChangeTaskStatus = (event: ChangeEvent<HTMLInputElement>) => {
                     const newTaskStatus = event.currentTarget.checked;
-                    changeTaskStatus(task.id, newTaskStatus);
+                    changeTaskStatus(task.id, newTaskStatus, todolistId);
                 }
                 return (
                     <li key={task.id} className={task.isDane ? 'is-done' : ''}>
@@ -85,7 +98,10 @@ export const Todolist = ({title, task, removeTask, changeFilter, addTask, change
         <>
             <div className="App">
                 <div className='todolist'>
-                    <h3>{title}</h3>
+                    <div className={'todolist-title-container'}>
+                        <h3>{title}</h3>
+                        <Button title={'x'} onClick={handlerRemoveTodolist}/>
+                    </div>
                     <div>
                         <input value={taskTitle}
                                onChange={handleChangeTaskTitle}
