@@ -1,6 +1,8 @@
 import React, {ChangeEvent, useState} from "react";
 import {Button} from "./Button";
 import {FilterValuesType} from "../App";
+import {AddItemForm} from "./AddItemForm";
+import {EditableSpan} from "./EditableSpan";
 
 type TodolistType = {
     title: string
@@ -12,6 +14,8 @@ type TodolistType = {
     filter: string
     todolistId: string
     removeTodolist: (todolistId: string) => void
+    updateTask:(newTitle:string, taskId:string, todolistId:string)=>void
+    updateTodolist:(title:string, todolistId:string)=>void
 }
 
 export type TaskType = {
@@ -30,31 +34,14 @@ export const Todolist = ({
                              changeTaskStatus,
                              filter,
                              todolistId,
-                             removeTodolist
+                             removeTodolist,
+                             updateTask,
+                             updateTodolist
                          }: TodolistType) => {
 
     // const inputRef = useRef<HTMLInputElement>(null);
 
-    const [taskTitle, setTaskTitle] = useState('');
-    const [error, setError] = useState<string | null>(null);
 
-    const handleAddTask = () => {
-        if (taskTitle.trim() !== '') {
-            addTask(taskTitle.trim(), todolistId)
-            setTaskTitle('')
-        } else {
-            setError('Title cannot be empty')
-        }
-    }
-    const handleChangeTaskTitle = (event: ChangeEvent<HTMLInputElement>) => {
-        setTaskTitle(event.currentTarget.value)
-    }
-    const handleAddTaskOnKey = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        error && setError(null)
-        if (event.key === 'Enter') {
-            handleAddTask()
-        }
-    }
     const handleFilterTasksChange = (filter: FilterValuesType) => {
         changeFilter(filter, todolistId);
     }
@@ -62,9 +49,12 @@ export const Todolist = ({
         removeTodolist(todolistId);
     }
 
-    const userTaskTitleLengthWarning = taskTitle.length > 15 && <div>message exceeds 15 characters</div>;
-    const userTaskEmptyTitleError = error && <div className={'error-message'}>{error}</div>
-
+    const addTaskCallback = (title:string)=> {
+        addTask(title, todolistId);
+    }
+    const handlerUpdateTodolistCallback = (title:string)=>{
+        updateTodolist(title, todolistId)
+    }
 
     const taskElement =
         task.length !== 0 ?
@@ -76,13 +66,16 @@ export const Todolist = ({
                     const newTaskStatus = event.currentTarget.checked;
                     changeTaskStatus(task.id, newTaskStatus, todolistId);
                 }
+                const editaBlueSpan = (newTitle:string)=>{
+                    updateTask(newTitle, task.id, todolistId)
+                }
                 return (
                     <li key={task.id} className={task.isDane ? 'is-done' : ''}>
                         <input type="checkbox"
                                checked={task.isDane}
                                onChange={handlerChangeTaskStatus}
                         />
-                        <span>{task.title}</span>
+                        <EditableSpan value={task.title} editaBlueSpan={editaBlueSpan}/>
 
                         <Button
                             title={'x'}
@@ -99,24 +92,13 @@ export const Todolist = ({
             <div className="App">
                 <div className='todolist'>
                     <div className={'todolist-title-container'}>
-                        <h3>{title}</h3>
+                        <h3>
+                            <EditableSpan value={title} editaBlueSpan={handlerUpdateTodolistCallback}/>
+                        </h3>
                         <Button title={'x'} onClick={handlerRemoveTodolist}/>
                     </div>
-                    <div>
-                        <input value={taskTitle}
-                               onChange={handleChangeTaskTitle}
-                               onKeyDown={handleAddTaskOnKey}
-                               className={error ? 'error' : ''}
-                        />
-                        <Button title={'+'}
-                            // disabled={isAddTaskButtonDisabled}
-                                onClick={() => {
-                                    handleAddTask()
-                                }}
-                        />
-                        {userTaskEmptyTitleError}
-                        {userTaskTitleLengthWarning}
-                    </div>
+                    <AddItemForm addItem={addTaskCallback}/>
+
                     <ul>
                         {taskElement}
                     </ul>
