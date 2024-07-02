@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from "./component/Todolist";
 import {v1} from 'uuid'
+import {AddItemForm} from "./component/AddItemForm";
 
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
@@ -13,7 +14,7 @@ type TodolistType = {
 }
 
 export type TaskStateType = {
-    [key:string]:TaskType[]
+    [key: string]: TaskType[]
 }
 
 function App() {
@@ -87,38 +88,60 @@ function App() {
         delete tasks[todolistId];
     }
 
+    const addTodoList = (title: string) => {
+        const todoListId = v1();
+        const newTodoList: TodolistType = {id: todoListId, title: title, filter: 'all'}
+        setTodolist([...todolist, newTodoList]);
+        setTasks({...tasks, [todoListId]: []})
+    }
+    const updateTask = (newTitle: string, taskId: string, todolistId: string) => {
+        setTasks({
+            ...tasks,
+            [todolistId]: tasks[todolistId].map(el => el.id === taskId ? {...el, title: newTitle} : el)
+        })
+    }
+    const updateTodolist = (title:string, todolistId:string)=>{
+        setTodolist(todolist.map(el=>el.id === todolistId ? {...el, title}:el))
+    }
+
 
     return (
         <div className="App">
+            <div>
+                <AddItemForm addItem={addTodoList}/>
+            </div>
+            <div>
+                {todolist.map(t1 => {
+                    const allTodoListTasks = tasks[t1.id]
+                    let taskForTodolist = allTodoListTasks;
 
-            {todolist.map(t1 => {
-                const allTodoListTasks = tasks[t1.id]
-                let taskForTodolist = allTodoListTasks;
+                    switch (t1.filter) {
+                        case 'active':
+                            taskForTodolist = taskForTodolist.filter(task => !task.isDane);
+                            break;
+                        case 'completed':
+                            taskForTodolist = taskForTodolist.filter(task => task.isDane);
+                            break;
+                    }
+                    return (
+                        <Todolist
+                            key={t1.id}
+                            title={t1.title}
+                            task={taskForTodolist}
+                            removeTask={removeTask}
+                            changeFilter={changeFilter}
+                            todolistId={t1.id}
+                            addTask={addTask}
+                            changeTaskStatus={changeTaskStatus}
+                            filter={t1.filter}
+                            removeTodolist={removeTodolist}
+                            updateTask={updateTask}
+                            updateTodolist={updateTodolist}
+                        />
 
-                switch (t1.filter) {
-                    case 'active':
-                        taskForTodolist = taskForTodolist.filter(task => !task.isDane);
-                        break;
-                    case 'completed':
-                        taskForTodolist = taskForTodolist.filter(task => task.isDane);
-                        break;
-                }
-                return (
-                    <Todolist
-                        key={t1.id}
-                        title={t1.title}
-                        task={taskForTodolist}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        todolistId={t1.id}
-                        addTask={addTask}
-                        changeTaskStatus={changeTaskStatus}
-                        filter={t1.filter}
-                        removeTodolist={removeTodolist}
-                    />
-
-            )
-            })}
+                    )
+                })}
+            </div>
         </div>
     );
 }
