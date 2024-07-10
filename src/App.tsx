@@ -17,7 +17,7 @@ import {MenuButton} from './component/MenuButton';
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
 
-type TodolistType = {
+export type TodolistType = {
     id: string
     title: string
     filter: FilterValuesType
@@ -62,21 +62,12 @@ function App() {
         ]
     });
 
+    // task
     const removeTask = (taskId: string, todolistId: string) => {
         const todolistTasks = tasks[todolistId]; // 1. Найдем таски для тудулиста, в котором будет происходить удаление
         const filteredTask = todolistTasks.filter(task => task.id !== taskId);  // 2. Удалим таску по которой кликнули
         tasks[todolistId] = filteredTask; // 3. Перезапишем массив тасок на новый (отфильтрованный) массив
         setTasks({...tasks, filteredTask});
-
-
-    }
-    const changeFilter = (filter: FilterValuesType, todolistId: string) => {
-        const newTodolist = todolist.map(t1 => {
-            return t1.id === todolistId ? {...t1, filter} : t1
-        })
-        setTodolist(newTodolist)
-
-        // setTodolist(todolist.map(t1 => (t1.id === todolistId ? {...t1, filter}: t1))) // второй вариант более короткий
     }
     const addTask = (title: string, todolistId: string) => {
         const newTask = { // 1. Создадим новую таску
@@ -94,23 +85,32 @@ function App() {
         tasks[todolistId] = newState; // 3. Перезапишем массив тасок на новый массив, с уже измененным статусом у таски
         setTasks({...tasks}); // 4. Засетаем в state копию объекта, чтобы React отреагировал перерисовкой
     }
-    const removeTodolist = (todolistId: string) => {
-        const newTodolist = todolist.filter(t1 => t1.id !== todolistId)
-        setTodolist(newTodolist);
-        delete tasks[todolistId];
-    }
-
-    const addTodoList = (title: string) => {
-        const todoListId = v1();
-        const newTodoList: TodolistType = {id: todoListId, title: title, filter: 'all'}
-        setTodolist([...todolist, newTodoList]);
-        setTasks({...tasks, [todoListId]: []})
-    }
     const updateTask = (newTitle: string, taskId: string, todolistId: string) => {
         setTasks({
             ...tasks,
             [todolistId]: tasks[todolistId].map(el => el.id === taskId ? {...el, title: newTitle} : el)
         })
+    }
+
+    // Todolist
+    const changeFilter = (filter: FilterValuesType, todolistId: string) => {
+        const newTodolist = todolist.map(t1 => {
+            return t1.id === todolistId ? {...t1, filter} : t1
+        })
+        setTodolist(newTodolist)
+
+        // setTodolist(todolist.map(t1 => (t1.id === todolistId ? {...t1, filter}: t1))) // второй вариант более короткий
+    }
+    const removeTodolist = (todolistId: string) => {
+        const newTodolist = todolist.filter(t1 => t1.id !== todolistId)
+        setTodolist(newTodolist);
+        delete tasks[todolistId];
+    }
+    const addTodoList = (title: string) => {
+        const todoListId = v1();
+        const newTodoList: TodolistType = {id: todoListId, title: title, filter: 'all'}
+        setTodolist([...todolist, newTodoList]);
+        setTasks({...tasks, [todoListId]: []})
     }
     const updateTodolist = (title: string, todolistId: string) => {
         setTodolist(todolist.map(el => el.id === todolistId ? {...el, title} : el))

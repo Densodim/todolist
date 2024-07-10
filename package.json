@@ -46,11 +46,7 @@
       "last 1 safari version"
     ]
   },
-  "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.ts"
-    ]
-  },
+
   "devDependencies": {
     "@formkit/auto-animate": "^0.8.2"
   }
