@@ -1,5 +1,6 @@
 import {v1} from "uuid";
 import {TaskStateType} from "../App";
+import {AddTodolistActionType, RemoveTodolistActionType} from "./todolist-reducer";
 
 
 type addTaskType = {
@@ -34,15 +35,22 @@ export type updateTaskType = {
     };
 }
 
-type ActionsType = addTaskType | removeTaskType | changeTaskStatus | updateTaskType
+type ActionsType =
+    addTaskType
+    | removeTaskType
+    | changeTaskStatus
+    | updateTaskType
+    | AddTodolistActionType
+    | RemoveTodolistActionType
 
-export const taskReducer = (state: TaskStateType, action: ActionsType):TaskStateType => {
+export const taskReducer = (state: TaskStateType, action: ActionsType): TaskStateType => {
     switch (action.type) {
         case 'ADD_TASK':
-            const newTask = {id: v1(), title: action.payload.title, isDane: false}
+            const {title, todolistId} = action.payload
+            const newTask = {id: v1(), title, isDane: false}
             return {
                 ...state,
-                [action.payload.todolistId]: [newTask, ...state[action.payload.todolistId]]
+                [todolistId]: [newTask, ...state[todolistId]]
             }
         case "REMOVE_TASK":
             return {
@@ -65,6 +73,16 @@ export const taskReducer = (state: TaskStateType, action: ActionsType):TaskState
                     ? {...el, title: action.payload.newTitle}
                     : el)
             }
+        case "ADD-TODOLIST":
+            return {
+                ...state,
+                [action.payload.todolistId]: []
+            }
+        case "REMOVE-TODOLIST": {
+            const stateCopy = {...state};
+            delete stateCopy[action.payload.id]
+            return stateCopy
+        }
         default:
             throw new Error('Unknown action type')
     }
@@ -79,7 +97,8 @@ export const removeTaskAC = (todolistId: string, taskId: string): removeTaskType
 export const changeTaskStatusAC = (todolistId: string, taskId: string, taskStatus: boolean): changeTaskStatus => {
     return {type: "CHANGE_TASK_STATUS", payload: {todolistId, taskId, taskStatus}}
 }
-export const updateTaskAC = (todolistId: string, taskId: string, newTitle: string): updateTaskType => {
-    return {type: "UPDATE_TASK", payload: {todolistId, taskId, newTitle}}
-}
+export const updateTaskAC = (todolistId: string, taskId: string, newTitle: string): updateTaskType => (
+    {type: "UPDATE_TASK", payload: {todolistId, taskId, newTitle}}
+)
+
 
