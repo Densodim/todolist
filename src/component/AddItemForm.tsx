@@ -1,5 +1,9 @@
 import React, {ChangeEvent, useState} from "react";
-import {Button} from "./Button";
+// import {Button} from "./Button";
+import Button from '@mui/material/Button'
+import {TextField} from "@mui/material";
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import IconButton from '@mui/material/IconButton'
 
 type PropsType = {
     addItem: (title: string) => void
@@ -30,24 +34,33 @@ export const AddItemForm = ({addItem}: PropsType) => {
     }
 
     const userItemTitleLengthWarning = title.length > 15 && <div>message exceeds 15 characters</div>;
-    const userItemEmptyTitleError = error && <div className={'error-message'}>{error}</div>
 
 
     return (
         <>
             <div>
-                <input value={title}
-                       onChange={handleChangeItemTitle}
-                       onKeyDown={handleAddItemOnKey}
-                       className={error ? 'error' : ''}
+                <TextField
+                    label="Enter a title"
+                    variant={'outlined'}
+                    error={!!error}
+                    helperText={error}
+                    value={title}
+                    size={'small'}
+                    onChange={handleChangeItemTitle}
+                    onKeyDown={handleAddItemOnKey}
                 />
-                <Button title={'+'}
-                    // disabled={isAddItemButtonDisabled}
-                        onClick={() => {
-                            handleAddItem()
-                        }}
-                />
-                {userItemEmptyTitleError}
+                <IconButton
+                    onClick={() => {
+                        handleAddItem()
+                    }}
+                    color={'primary'}
+                >
+                    <AddBoxIcon/>
+                </IconButton>
+                {/*<Button variant="contained" title={'+'}*/}
+                {/*    // disabled={isAddItemButtonDisabled}*/}
+                {/*        onClick={() => {handleAddItem()}}*/}
+                {/*>+</Button>*/}
                 {userItemTitleLengthWarning}
             </div>
         </>

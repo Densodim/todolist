@@ -1,8 +1,16 @@
 import React, {ChangeEvent, useState} from "react";
-import {Button} from "./Button";
+
 import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
+
+import IconButton from '@mui/material/IconButton'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Button from '@mui/material/Button'
+import {Box, Checkbox, List, ListItem} from "@mui/material";
+
+import {filterButtonsConteinerSx, getListItemSx} from './Todolist.styles';
+
 
 type TodolistType = {
     title: string
@@ -14,8 +22,8 @@ type TodolistType = {
     filter: string
     todolistId: string
     removeTodolist: (todolistId: string) => void
-    updateTask:(newTitle:string, taskId:string, todolistId:string)=>void
-    updateTodolist:(title:string, todolistId:string)=>void
+    updateTask: (newTitle: string, taskId: string, todolistId: string) => void
+    updateTodolist: (title: string, todolistId: string) => void
 }
 
 export type TaskType = {
@@ -49,10 +57,10 @@ export const Todolist = ({
         removeTodolist(todolistId);
     }
 
-    const addTaskCallback = (title:string)=> {
+    const addTaskCallback = (title: string) => {
         addTask(title, todolistId);
     }
-    const handlerUpdateTodolistCallback = (title:string)=>{
+    const handlerUpdateTodolistCallback = (title: string) => {
         updateTodolist(title, todolistId)
     }
 
@@ -66,60 +74,70 @@ export const Todolist = ({
                     const newTaskStatus = event.currentTarget.checked;
                     changeTaskStatus(task.id, newTaskStatus, todolistId);
                 }
-                const editaBlueSpan = (newTitle:string)=>{
+                const editaBlueSpan = (newTitle: string) => {
                     updateTask(newTitle, task.id, todolistId)
                 }
                 return (
-                    <li key={task.id} className={task.isDane ? 'is-done' : ''}>
-                        <input type="checkbox"
-                               checked={task.isDane}
-                               onChange={handlerChangeTaskStatus}
-                        />
-                        <EditableSpan value={task.title} editaBlueSpan={editaBlueSpan}/>
 
-                        <Button
-                            title={'x'}
-                            onClick={handleRemoveTask}
-                        />
-
-                        {/*<button onClick={()=>{removeTask(task.id)}}>x</button>*/}
-                    </li>
+                    <ListItem
+                        key={task.id}
+                        disableGutters
+                        disablePadding
+                        sx={getListItemSx(task.isDane)}
+                    >
+                        <div>
+                            <Checkbox checked={task.isDane} onChange={handlerChangeTaskStatus}/>
+                            <EditableSpan value={task.title} editaBlueSpan={editaBlueSpan}/>
+                        </div>
+                        <IconButton onClick={handleRemoveTask}>
+                            <DeleteIcon/>
+                        </IconButton>
+                    </ListItem>
                 )
-            }) : <span> Yaur tasklist is empty </span>
+            })
+            :
+            <span> Yaur tasklist is empty </span>
 
     return (
         <>
             <div className="App">
-                <div className='todolist'>
-                    <div className={'todolist-title-container'}>
-                        <h3>
-                            <EditableSpan value={title} editaBlueSpan={handlerUpdateTodolistCallback}/>
-                        </h3>
-                        <Button title={'x'} onClick={handlerRemoveTodolist}/>
-                    </div>
-                    <AddItemForm addItem={addTaskCallback}/>
+                <Box sx={filterButtonsConteinerSx}>
+                    <h3>
+                        <EditableSpan value={title} editaBlueSpan={handlerUpdateTodolistCallback}/>
+                    </h3>
+                    <IconButton onClick={handlerRemoveTodolist}>
+                        <DeleteIcon/>
+                    </IconButton>
+                </Box>
+                <AddItemForm addItem={addTaskCallback}/>
 
-                    <ul>
-                        {taskElement}
-                    </ul>
-                    <div>
-                        <Button
-                            className={filter === 'all' ? 'active-filter' : ''}
-                            title={'All'}
-                            onClick={() => handleFilterTasksChange('all')}
-                        />
-                        <Button
-                            className={filter === 'active' ? 'active-filter' : ''}
-                            title={'Active'}
-                            onClick={() => handleFilterTasksChange('active')}
-                        />
-                        <Button
-                            className={filter === 'completed' ? 'active-filter' : ''}
-                            title={'Completed'}
-                            onClick={() => handleFilterTasksChange('completed')}
-                        />
-                    </div>
+                <List>
+                    {taskElement}
+                </List>
+                <div>
+                    <Button
+                        variant={filter === 'all' ? 'outlined' : 'text'}
+                        color={'inherit'}
+                        onClick={() => handleFilterTasksChange('all')}
+                    >
+                        All
+                    </Button>
+                    <Button
+                        variant={filter === 'active' ? 'outlined' : 'text'}
+                        color={'primary'}
+                        onClick={() => handleFilterTasksChange('active')}
+                    >
+                        Active
+                    </Button>
+                    <Button
+                        variant={filter === 'completed' ? 'outlined' : 'text'}
+                        color={'secondary'}
+                        onClick={() => handleFilterTasksChange('completed')}
+                    >
+                        Completed
+                    </Button>
                 </div>
+
             </div>
         </>
     )

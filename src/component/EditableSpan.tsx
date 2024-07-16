@@ -1,10 +1,11 @@
 import {ChangeEvent, ChangeEventHandler, useState} from "react";
+import {TextField} from "@mui/material";
 
 type PropsType = {
     value: string
-    editaBlueSpan:(newTitle:string)=>void
+    editaBlueSpan: (newTitle: string) => void
 }
-export const EditableSpan = ({value,editaBlueSpan}: PropsType) => {
+export const EditableSpan = ({value, editaBlueSpan}: PropsType) => {
     const [editMode, setEditMode] = useState(false);
     const [title, setTitle] = useState(value)
 
@@ -15,7 +16,7 @@ export const EditableSpan = ({value,editaBlueSpan}: PropsType) => {
         setEditMode(false);
         editaBlueSpan(title);
     }
-    const handlerChangeEdit = (event:ChangeEvent<HTMLInputElement>) => {
+    const handlerChangeEdit = (event: ChangeEvent<HTMLInputElement>) => {
         setTitle(event.currentTarget.value)
     }
 
@@ -23,7 +24,16 @@ export const EditableSpan = ({value,editaBlueSpan}: PropsType) => {
 
         <>
             {editMode ?
-                (<input value={title} onBlur={handlerDeactivateEdit} onChange={handlerChangeEdit} autoFocus/>)
+                (
+                    <TextField
+                        value={title}
+                        onBlur={handlerDeactivateEdit}
+                        onChange={handlerChangeEdit}
+                        autoFocus
+                        variant={'outlined'}
+                        size={'small'}
+                    />
+                )
                 :
                 (<span onDoubleClick={handlerActivatedEdit}>{value}</span>)
             }
