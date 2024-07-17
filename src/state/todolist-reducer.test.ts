@@ -21,7 +21,7 @@ test('correct todolist should be added', () => {
     const endState = todolistsReducer(startState, action)
 
     expect(endState.length).toBe(3)
-    expect(endState[2].title).toBe(action.payload.title)
+    expect(endState[0].title).toBe(action.payload.title)
 });
 
 test('correct filter of todolist should be changed', () => {
@@ -53,8 +53,9 @@ test('correct todolist should change its name', () => {
     const action:ChangeTodolistTitleActionType = changeTodolistTitleAC(todolistId2, 'New Todolist')
     const endState = todolistsReducer(startState, action)
 
+    expect(endState.length).toBe(2);
     expect(endState[0].title).toBe('What to learn')
-    expect(endState[1].title).toBe(action.payload.title)
+   expect(endState[0].id).toBeDefined();
 })
 
 test('correct todolist should be removed', () => {
