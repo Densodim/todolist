@@ -1,6 +1,5 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, memo, useState} from "react";
 // import {Button} from "./Button";
-import Button from '@mui/material/Button'
 import {TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import IconButton from '@mui/material/IconButton'
@@ -9,8 +8,8 @@ type PropsType = {
     addItem: (title: string) => void
 }
 
-export const AddItemForm = ({addItem}: PropsType) => {
-
+export const AddItemForm = memo(({addItem}: PropsType) => {
+    console.log('AddItemForm is called')
     const [title, setTitle] = useState('');
     const [error, setError] = useState<string | null>(null);
 
@@ -57,12 +56,7 @@ export const AddItemForm = ({addItem}: PropsType) => {
                 >
                     <AddBoxIcon/>
                 </IconButton>
-                {/*<Button variant="contained" title={'+'}*/}
-                {/*    // disabled={isAddItemButtonDisabled}*/}
-                {/*        onClick={() => {handleAddItem()}}*/}
-                {/*>+</Button>*/}
-                {userItemTitleLengthWarning}
             </div>
         </>
     )
-}
+});

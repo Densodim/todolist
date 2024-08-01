@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {memo, useCallback} from "react";
 
 import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
@@ -7,22 +7,23 @@ import {EditableSpan} from "./EditableSpan";
 import IconButton from '@mui/material/IconButton'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Button from '@mui/material/Button'
-import {Box, Checkbox, List, ListItem} from "@mui/material";
+import {Box, List} from "@mui/material";
 
-import {filterButtonsConteinerSx, getListItemSx} from './Todolist.styles';
+import {filterButtonsConteinerSx} from './Todolist.styles';
+import {Task} from "./Task";
 
 
 type TodolistType = {
     title: string
     task: Array<TaskType>
     removeTask: (taskId: string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void
+    updateTask: (newTitle: string, taskId: string, todolistId: string) => void
     changeFilter: (filter: FilterValuesType, todolistId: string) => void
     addTask: (title: string, todolistId: string) => void
-    changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void
     filter: string
     todolistId: string
     removeTodolist: (todolistId: string) => void
-    updateTask: (newTitle: string, taskId: string, todolistId: string) => void
     updateTodolist: (title: string, todolistId: string) => void
 }
 
@@ -33,70 +34,55 @@ export type TaskType = {
 }
 
 
-export const Todolist = ({
-                             title,
-                             task,
-                             removeTask,
-                             changeFilter,
-                             addTask,
-                             changeTaskStatus,
-                             filter,
-                             todolistId,
-                             removeTodolist,
-                             updateTask,
-                             updateTodolist
-                         }: TodolistType) => {
+export const Todolist = memo(({
+                                  title,
+                                  task,
+                                  removeTask,
+                                  changeFilter,
+                                  addTask,
+                                  changeTaskStatus,
+                                  filter,
+                                  todolistId,
+                                  removeTodolist,
+                                  updateTask,
+                                  updateTodolist
+                              }: TodolistType) => {
+    console.log('Todolist is called');
 
-    // const inputRef = useRef<HTMLInputElement>(null);
-
-
-    const handleFilterTasksChange = (filter: FilterValuesType) => {
+    const handleFilterTasksChange = useCallback((filter: FilterValuesType) => {
         changeFilter(filter, todolistId);
-    }
-    const handlerRemoveTodolist = () => {
+    }, []);
+    const handlerRemoveTodolist = useCallback(() => {
         removeTodolist(todolistId);
-    }
+    }, []);
 
-    const addTaskCallback = (title: string) => {
+    const addTaskCallback = useCallback((title: string) => {
         addTask(title, todolistId);
-    }
-    const handlerUpdateTodolistCallback = (title: string) => {
+    }, [addTask, todolistId]);
+
+    const handlerUpdateTodolistCallback = useCallback((title: string) => {
         updateTodolist(title, todolistId)
+    }, []);
+
+    switch (filter) {
+        case 'active':
+            task = task.filter(task => !task.isDane);
+            break;
+        case 'completed':
+            task = task.filter(task => task.isDane);
+            break;
     }
 
-    const taskElement =
+    let taskElement =
         task.length !== 0 ?
             task.map(task => {
-                const handleRemoveTask = () => {
-                    removeTask(task.id, todolistId);
-                }
-                const handlerChangeTaskStatus = (event: ChangeEvent<HTMLInputElement>) => {
-                    const newTaskStatus = event.currentTarget.checked;
-                    changeTaskStatus(task.id, newTaskStatus, todolistId);
-                }
-                const editaBlueSpan = (newTitle: string) => {
-                    updateTask(newTitle, task.id, todolistId)
-                }
                 return (
-
-                    <ListItem
-                        key={task.id}
-                        disableGutters
-                        disablePadding
-                        sx={getListItemSx(task.isDane)}
-                    >
-                        <div>
-                            <Checkbox checked={task.isDane} onChange={handlerChangeTaskStatus}/>
-                            <EditableSpan value={task.title} editaBlueSpan={editaBlueSpan}/>
-                        </div>
-                        <IconButton onClick={handleRemoveTask}>
-                            <DeleteIcon/>
-                        </IconButton>
-                    </ListItem>
-                )
+                    <Task removeTask={removeTask} changeTaskStatus={changeTaskStatus} updateTask={updateTask}
+                          task={task} todolistId={todolistId} key={task.id}/>)
             })
             :
             <span> Yaur tasklist is empty </span>
+
 
     return (
         <>
@@ -141,4 +127,5 @@ export const Todolist = ({
             </div>
         </>
     )
-}
+});
+

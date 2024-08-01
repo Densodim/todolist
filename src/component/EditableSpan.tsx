@@ -1,11 +1,12 @@
-import {ChangeEvent, ChangeEventHandler, useState} from "react";
+import {ChangeEvent, ChangeEventHandler, memo, useState} from "react";
 import {TextField} from "@mui/material";
 
 type PropsType = {
     value: string
     editaBlueSpan: (newTitle: string) => void
 }
-export const EditableSpan = ({value, editaBlueSpan}: PropsType) => {
+export const EditableSpan = memo(({value, editaBlueSpan}: PropsType) => {
+    console.log('EditableSpan');
     const [editMode, setEditMode] = useState(false);
     const [title, setTitle] = useState(value)
 
@@ -39,4 +40,4 @@ export const EditableSpan = ({value, editaBlueSpan}: PropsType) => {
             }
         </>
     )
-}
+});
