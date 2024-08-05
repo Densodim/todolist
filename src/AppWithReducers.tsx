@@ -158,16 +158,16 @@ function AppWithReducers() {
                                     <Todolist
                                         key={t1.id}
                                         title={t1.title}
-                                        task={taskForTodolist}
-                                        removeTask={removeTask}
-                                        changeFilter={changeFilter}
+                                        // task={taskForTodolist}
+                                        // removeTask={removeTask}
+                                        // changeFilter={changeFilter}
                                         todolistId={t1.id}
-                                        addTask={addTask}
-                                        changeTaskStatus={changeTaskStatus}
+                                        // addTask={addTask}
+                                        // changeTaskStatus={changeTaskStatus}
                                         filter={t1.filter}
-                                        removeTodolist={removeTodolist}
-                                        updateTask={updateTask}
-                                        updateTodolist={updateTodolist}
+                                        // removeTodolist={removeTodolist}
+                                        // updateTask={updateTask}
+                                        // updateTodolist={updateTodolist}
                                     />
                                 </Paper>
                             </Grid2>

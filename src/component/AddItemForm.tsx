@@ -1,18 +1,20 @@
-import React, {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, memo, useCallback, useState} from "react";
 // import {Button} from "./Button";
-import Button from '@mui/material/Button'
 import {TextField} from "@mui/material";
 import AddBoxIcon from '@mui/icons-material/AddBox'
 import IconButton from '@mui/material/IconButton'
+import {useDispatch} from "react-redux";
 
 type PropsType = {
     addItem: (title: string) => void
 }
 
-export const AddItemForm = ({addItem}: PropsType) => {
+export const AddItemForm = memo(({addItem}: PropsType) => {
 
     const [title, setTitle] = useState('');
     const [error, setError] = useState<string | null>(null);
+
+    const dispatch = useDispatch();
 
     const handleAddItem = () => {
         if (title.trim() !== '') {
@@ -32,9 +34,6 @@ export const AddItemForm = ({addItem}: PropsType) => {
             handleAddItem()
         }
     }
-
-    const userItemTitleLengthWarning = title.length > 15 && <div>message exceeds 15 characters</div>;
-
 
     return (
         <>
@@ -57,12 +56,8 @@ export const AddItemForm = ({addItem}: PropsType) => {
                 >
                     <AddBoxIcon/>
                 </IconButton>
-                {/*<Button variant="contained" title={'+'}*/}
-                {/*    // disabled={isAddItemButtonDisabled}*/}
-                {/*        onClick={() => {handleAddItem()}}*/}
-                {/*>+</Button>*/}
-                {userItemTitleLengthWarning}
             </div>
         </>
     )
-}
+});
+
