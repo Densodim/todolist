@@ -4,20 +4,19 @@ import {getListItemSx} from "./Todolist.styles";
 import {EditableSpan} from "./EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {TaskType} from "./Todolist";
 import {useDispatch, useSelector} from "react-redux";
 import {changeTaskStatusAC, removeTaskAC, updateTaskAC} from "../state/task-reducer";
 import {AppRootState} from "../state/store";
 import {TaskStateType} from "../AppWithRedux";
 
 type TaskPropsType = {
-    task: TaskType
+    taskId: string
     todolistId: string
 }
-export const Task = memo(({ task, todolistId}: TaskPropsType) => {
+export const Task = memo(({taskId, todolistId}: TaskPropsType) => {
 
-    const tasks = useSelector<AppRootState, TaskStateType>((state)=>state.tasks);
-    console.log(tasks[todolistId])
+    const tasks = useSelector<AppRootState, TaskStateType>((state) => state.tasks);
+    const task = tasks[todolistId].filter(el => el.id === taskId)[0];
     const dispatch = useDispatch();
 
     const handleRemoveTask = useCallback(() => {

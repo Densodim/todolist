@@ -69,7 +69,7 @@ export const Todolist = memo(({
         task.length !== 0 ?
             task.map(task => {
                 return (
-                    <Task task={task} todolistId={todolistId} key={task.id}/>)
+                    <Task taskId={task.id} todolistId={todolistId} key={task.id}/>)
             })
             :
             <span> Yaur tasklist is empty </span>
