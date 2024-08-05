@@ -1,6 +1,6 @@
 import React, {memo, useCallback} from "react";
 
-import {FilterValuesType} from "../App";
+import {FilterValuesType, TaskStateType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 
@@ -11,20 +11,16 @@ import {Box, List} from "@mui/material";
 
 import {filterButtonsConteinerSx} from './Todolist.styles';
 import {Task} from "./Task";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootState} from "../state/store";
+import {addTaskAC} from "../state/task-reducer";
+import {changeTodolistFilterAC, changeTodolistTitleAC, removeTodolistAC} from "../state/todolist-reducer";
 
 
 type TodolistType = {
     title: string
-    task: Array<TaskType>
-    removeTask: (taskId: string, todolistId: string) => void
-    changeTaskStatus: (taskId: string, taskStatus: boolean, todolistId: string) => void
-    updateTask: (newTitle: string, taskId: string, todolistId: string) => void
-    changeFilter: (filter: FilterValuesType, todolistId: string) => void
-    addTask: (title: string, todolistId: string) => void
     filter: string
     todolistId: string
-    removeTodolist: (todolistId: string) => void
-    updateTodolist: (title: string, todolistId: string) => void
 }
 
 export type TaskType = {
@@ -36,33 +32,29 @@ export type TaskType = {
 
 export const Todolist = memo(({
                                   title,
-                                  task,
-                                  removeTask,
-                                  changeFilter,
-                                  addTask,
-                                  changeTaskStatus,
                                   filter,
                                   todolistId,
-                                  removeTodolist,
-                                  updateTask,
-                                  updateTodolist
                               }: TodolistType) => {
-    console.log('Todolist is called');
+
+    const tasks: TaskStateType = useSelector<AppRootState, TaskStateType>((state) => state.tasks);
+    const dispatch = useDispatch();
+
+    let task = tasks[todolistId];
 
     const handleFilterTasksChange = useCallback((filter: FilterValuesType) => {
-        changeFilter(filter, todolistId);
-    }, []);
+        dispatch(changeTodolistFilterAC(todolistId, filter))
+    }, [dispatch]);
     const handlerRemoveTodolist = useCallback(() => {
-        removeTodolist(todolistId);
-    }, []);
+        dispatch(removeTodolistAC(todolistId))
+    }, [dispatch]);
 
     const addTaskCallback = useCallback((title: string) => {
-        addTask(title, todolistId);
-    }, [addTask, todolistId]);
+        dispatch(addTaskAC(title, todolistId))
+    }, [dispatch]);
 
     const handlerUpdateTodolistCallback = useCallback((title: string) => {
-        updateTodolist(title, todolistId)
-    }, []);
+        dispatch(changeTodolistTitleAC(todolistId, title))
+    }, [dispatch]);
 
     switch (filter) {
         case 'active':
@@ -77,8 +69,7 @@ export const Todolist = memo(({
         task.length !== 0 ?
             task.map(task => {
                 return (
-                    <Task removeTask={removeTask} changeTaskStatus={changeTaskStatus} updateTask={updateTask}
-                          task={task} todolistId={todolistId} key={task.id}/>)
+                    <Task task={task} todolistId={todolistId} key={task.id}/>)
             })
             :
             <span> Yaur tasklist is empty </span>
