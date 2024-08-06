@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from "./component/Todolist";
 import {v1} from 'uuid'
-import {AddItemForm} from "./component/AddItemForm";
+import {AddItemForm} from "./component/AddItemForm/AddItemForm";
 
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
@@ -29,9 +29,19 @@ export type TaskStateType = {
 
 type ThemeModeType = 'dark' | 'light'
 
+let todolistID1 = v1();
+let todolistID2 = v1();
+
+function useTodolist (){
+
+}
+
+function useTasks(){
+
+}
+
 function App() {
-    let todolistID1 = v1();
-    let todolistID2 = v1();
+
 
     let todolistInitialState: TodolistType[] = [
         {

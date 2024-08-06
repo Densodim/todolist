@@ -2,7 +2,7 @@ import React, {useReducer, useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from "./component/Todolist";
 import {v1} from 'uuid'
-import {AddItemForm} from "./component/AddItemForm";
+import {AddItemForm} from "./component/AddItemForm/AddItemForm";
 
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'

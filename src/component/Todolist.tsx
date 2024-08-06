@@ -1,7 +1,7 @@
 import React, {memo, useCallback} from "react";
 
 import {FilterValuesType, TaskStateType} from "../App";
-import {AddItemForm} from "./AddItemForm";
+import {AddItemForm} from "./AddItemForm/AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 
 import IconButton from '@mui/material/IconButton'

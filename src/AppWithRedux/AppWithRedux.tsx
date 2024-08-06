@@ -1,21 +1,18 @@
-import React, {useCallback, useState} from 'react';
-import './App.css';
-import {TaskType, Todolist} from "./component/Todolist";
-import {AddItemForm} from "./component/AddItemForm";
+import React from 'react';
+import '../App.css';
+import {TaskType, Todolist} from "../component/Todolist";
+import {AddItemForm} from "../component/AddItemForm/AddItemForm";
 
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import MenuIcon from '@mui/icons-material/Menu'
-import {Container, createTheme, CssBaseline, Grid, Paper, Switch, ThemeProvider} from "@mui/material";
+import {Container, CssBaseline, Grid, Paper, Switch, ThemeProvider} from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
-import {tolbarSx} from './component/Todolist.styles';
-import {MenuButton} from './component/MenuButton';
-import {addTodolistAC} from "./state/todolist-reducer";
-import {changeTaskStatusAC, removeTaskAC, updateTaskAC} from "./state/task-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootState} from "./state/store";
+import {tolbarSx} from '../component/Todolist.styles';
+import {MenuButton} from '../component/MenuButton';
+import {useAppWithRedux} from "./hooks/useAppWithRedux";
 
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
@@ -30,33 +27,15 @@ export type TaskStateType = {
     [key: string]: TaskType[]
 }
 
-type ThemeModeType = 'dark' | 'light'
+export type ThemeModeType = 'dark' | 'light'
 
 function AppWithRedux() {
-
-    const dispatch = useDispatch();
-    const todolist = useSelector<AppRootState, Array<TodolistType>>((state) => state.todolists);
-
-    // Todolist
-    const addTodoList = useCallback((title: string) => {
-        const action = addTodolistAC(title);
-        dispatch(action);
-    }, [dispatch]);
-
-
-    //style
-    const [themeMode, setThemeMode] = useState<ThemeModeType>();
-    const theme = createTheme({
-        palette: {
-            mode: themeMode === 'light' ? 'light' : 'dark',
-            primary: {
-                main: '#efc700',
-            }
-        }
-    });
-    const handlerChangeMode = () => {
-        setThemeMode(themeMode === 'light' ? 'dark' : 'light')
-    }
+    const {
+        theme,
+        handlerChangeMode,
+        addTodoList,
+        todolist
+    } = useAppWithRedux();
 
     return (
 
