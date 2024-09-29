@@ -182,7 +182,12 @@ test("new array should be added when new todolist is added", () => {
     order: 0,
     addedDate: ""
   };
-  const action = todolistsAction.addTodolist({ todolist: newTodolist });
+  const action: TestActionType<typeof todolistsAction.addTodolist.fulfilled> = {
+    type: todolistsAction.addTodolist.fulfilled.type,
+    payload: {
+      todolist: newTodolist
+    }
+  };
 
   const endState = tasksReducer(startState, action);
 
@@ -196,8 +201,12 @@ test("new array should be added when new todolist is added", () => {
   expect(endState[newKey]).toEqual([]);
 });
 test("propertry with todolistId should be deleted", () => {
-  const action = todolistsAction.removeTodolist({ id: "todolistId2" });
-
+  const action:TestActionType<typeof todolistsAction.removeTodolist.fulfilled> = {
+    type:todolistsAction.removeTodolist.fulfilled.type,
+    payload:{
+      id: "todolistId2"
+    }
+  }
   const endState = tasksReducer(startState, action);
 
   const keys = Object.keys(endState);
