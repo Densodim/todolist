@@ -29,7 +29,7 @@ const slice = createSlice({
         delete state[action.payload.id];
       })
       .addCase(todolistsAction.fetchTodolists.fulfilled, (state, action) => {
-        action.payload.todolists.forEach((el:any) => {
+        action.payload.todolists.forEach((el) => {
           state[el.id] = [];
         });
       })

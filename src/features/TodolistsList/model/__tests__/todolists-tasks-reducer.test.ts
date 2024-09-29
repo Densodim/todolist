@@ -13,19 +13,12 @@ test("ids should be equals", () => {
     addedDate: "",
     order: 0
   };
-  // const action:TestActionType<typeof todolistsAction.fetchTodolists.fulfilled> = {
-  //   type: todolistsAction.fetchTodolists.fulfilled.type,
-  //   payload:{
-  //     todolist:todolist
-  //   }
-  // }
-  // const action: TestActionType<typeof todolistsAction.fetchTodolists.fulfilled> = {
-  //   type: todolistsAction.fetchTodolists.fulfilled.type,
-  //   payload: {
-  //     todolist
-  //   }
-  // };
-  const action = todolistsAction.fetchTodolists.fulfilled({ todolist }, "fdfdsfdsf", undefined);
+  const action: TestActionType<typeof todolistsAction.fetchTodolists.fulfilled> = {
+    type: todolistsAction.fetchTodolists.fulfilled.type,
+    payload: {
+      todolists:[todolist]
+    }
+  };
 
   const endTasksState = tasksReducer(startTasksState, action);
   const endTodolistsState = todolistsReducer(startTodolistsState, action);
@@ -34,6 +27,6 @@ test("ids should be equals", () => {
   const idFromTasks = keys[0];
   const idFromTodolists = endTodolistsState[0].id;
 
-  expect(idFromTasks).toBe(action.payload.todolist.id);
-  expect(idFromTodolists).toBe(action.payload.todolist.id);
+  expect(idFromTasks).toBe(action.payload.todolists[0].id);
+  expect(idFromTodolists).toBe(action.payload.todolists[0].id);
 });
