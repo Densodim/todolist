@@ -22,10 +22,10 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(todolistsAction.addTodolist, (state, action) => {
+      .addCase(todolistsAction.addTodolist.fulfilled, (state, action) => {
         state[action.payload.todolist.id] = [];
       })
-      .addCase(todolistsAction.removeTodolist, (state, action) => {
+      .addCase(todolistsAction.removeTodolist.fulfilled, (state, action) => {
         delete state[action.payload.id];
       })
       .addCase(todolistsAction.fetchTodolists.fulfilled, (state, action) => {
