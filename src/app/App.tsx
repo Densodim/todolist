@@ -3,10 +3,10 @@ import "./App.css";
 import { TodolistsList } from "features/TodolistsList/ui/TodolistsList";
 import { ErrorSnackbar } from "common/components/ErrorSnackbar/ErrorSnackbar";
 import { useDispatch, useSelector } from "react-redux";
-import { appSelector, initializeAppTC } from "./app-reducer";
+import { appSelector, initializeApp } from "./app-reducer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Login } from "features/auth/ui/Login";
-import { logoutTC } from "features/auth/model/auth-reducer";
+
 import {
   AppBar,
   Button,
@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
 import { isLoadingSelector } from "app/app.selector";
+import { logout } from "../features/auth/model/auth-reducer";
 
 type PropsType = {
   demo?: boolean;
@@ -32,11 +33,11 @@ function App({ demo = false }: PropsType) {
   const dispatch = useDispatch<any>();
 
   useEffect(() => {
-    dispatch(initializeAppTC());
+    dispatch(initializeApp());
   }, []);
 
   const logoutHandler = useCallback(() => {
-    dispatch(logoutTC());
+    dispatch(logout());
   }, []);
 
   if (!isInitialized) {

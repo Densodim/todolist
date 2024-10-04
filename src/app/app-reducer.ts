@@ -1,7 +1,7 @@
-import { Dispatch } from "redux";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { authActions } from "features/auth/model/auth-reducer";
 import { authAPI } from "features/auth/api/auth-api";
+import { createAppAsyncThunk } from "../common/utils/create-app-async-thunk";
+import { handleServerAppError, handleServerNetworkError } from "../common/utils/error-utils";
 
 export enum RequestStatus {
   IDLE = "idle",
@@ -13,7 +13,7 @@ export enum RequestStatus {
 let initialState: InitialStateType = {
   status: RequestStatus.IDLE,
   error: null,
-  isInitialized: false,
+  isInitialized: false
 };
 
 const slice = createSlice({
@@ -28,13 +28,19 @@ const slice = createSlice({
     },
     setAppInitialized: (state, action: PayloadAction<{ isInitialized: boolean }>) => {
       state.isInitialized = action.payload.isInitialized;
-    },
+    }
   },
+  // extraReducers:(builder)=>{
+  //   builder
+  //     .addCase(initializeApp.fulfilled, (state, action: PayloadAction<{ isInitialized: boolean }>)=>{
+  //       state.isInitialized = action.payload.isInitialized;
+  //     })
+  // },
   selectors: {
     selectorAppError: (sliceState) => sliceState.error,
     selectorAppStatus: (sliceState) => sliceState.status,
-    selectorAppInitialized: (sliceState) => sliceState.isInitialized,
-  },
+    selectorAppInitialized: (sliceState) => sliceState.isInitialized
+  }
 });
 
 export const appReducer = slice.reducer;
@@ -50,13 +56,24 @@ export type InitialStateType = {
   isInitialized: boolean;
 };
 
-export const initializeAppTC = () => (dispatch: Dispatch) => {
-  authAPI.me().then((res) => {
+export const initializeApp = createAppAsyncThunk<{
+  isLoggedIn: boolean
+}, undefined>(`${slice.name}/initializeApp`, async (arg, thunkAPI) => {
+  const { dispatch, rejectWithValue } = thunkAPI;
+  try {
+    const res = await authAPI.me();
     if (res.data.resultCode === 0) {
-      dispatch(authActions.setIsLoggedIn({ isLoggedIn: true }));
+      return { isLoggedIn: true };
     } else {
+      handleServerAppError(res.data, dispatch, false);
+      return rejectWithValue(null); //кастыль
     }
-
+  } catch (error) {
+    handleServerNetworkError(error, dispatch);
+    return rejectWithValue(null); //кастыль
+  } finally {
     dispatch(appAction.setAppInitialized({ isInitialized: true }));
-  });
-};
+  }
+
+});
+

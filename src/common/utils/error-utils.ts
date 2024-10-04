@@ -1,14 +1,23 @@
 import { Dispatch } from "redux";
 import { appAction, RequestStatus } from "app/app-reducer";
-import { AppDispatch } from "app/store";
 import axios from "axios";
 import { BaseResponseType } from "common/types/base-response-type";
 
-export const handleServerAppError = <D>(data: BaseResponseType<D>, dispatch: Dispatch) => {
-  if (data.messages.length) {
-    dispatch(appAction.setAppError({ error: data.messages[0] }));
-  } else {
-    dispatch(appAction.setAppError({ error: "Some error occurred" }));
+/**
+ * handleServerAppError - function error app
+ * @param data
+ * @param dispatch - dispatch
+ * @param isShowError
+ * @return - ничего не возвращает null
+ */
+export const handleServerAppError = <D>(data: BaseResponseType<D>, dispatch: Dispatch, isShowError: boolean = true) => {
+  if (isShowError) {
+    // if (data.messages.length) {
+    //   dispatch(appAction.setAppError({ error: data.messages[0] }));
+    // } else {
+    //   dispatch(appAction.setAppError({ error: "Some error occurred" }));
+    // }
+    dispatch(appAction.setAppError({ error: data.messages.length ? data.messages[0] : "Some error occurred" }));
   }
   dispatch(appAction.setAppStatus({ status: RequestStatus.FAILED }));
 };
